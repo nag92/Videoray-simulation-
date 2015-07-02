@@ -1,0 +1,5 @@
+<launch>
+        <param name="robot_description" command="cat $(find move_videoray)/videoray.urdf" />
+        <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+        <node name="move_straight" pkg="move_videoray" type="move_straight" />
+</launch>
