@@ -11,6 +11,8 @@ find_package(catkin REQUIRED COMPONENTS
   std_msgs
   tf
   geometry_msgs
+  pcl_conversions 
+  pcl_ros 
 )
 
 ## System dependencies are found with CMake's conventions
@@ -180,3 +182,29 @@ target_link_libraries(move_from_pose_only ${catkin_LIBRARIES})
 add_executable(move_unfiltered src/move_unfiltered.cpp)
 target_link_libraries(move_unfiltered ${catkin_LIBRARIES})
 
+add_executable(limitFilter src/limitFilter.cpp)
+target_link_libraries(limitFilter ${catkin_LIBRARIES})
+
+
+add_executable(indicesFilter src/indicesFilter.cpp)
+target_link_libraries(indicesFilter ${catkin_LIBRARIES})
+
+add_executable(smoothFilter src/smoothFilter.cpp)
+target_link_libraries(smoothFilter ${catkin_LIBRARIES})
+
+add_executable(voxelFilter src/voxelFilter.cpp)
+target_link_libraries(voxelFilter ${catkin_LIBRARIES})
+
+add_executable(featureExtraction src/featureExtraction.cpp)
+target_link_libraries(featureExtraction ${catkin_LIBRARIES})
+
+
+add_executable(fullLimitFilter src/fullLimitFilter.cpp)
+target_link_libraries(fullLimitFilter ${catkin_LIBRARIES})
+
+
+add_executable(pointFilter src/pointFilter.cpp)
+target_link_libraries(pointFilter ${catkin_LIBRARIES})
+
+add_executable(indicesFilter2 src/indicesFilter2.cpp)
+target_link_libraries(indicesFilter2 ${catkin_LIBRARIES})

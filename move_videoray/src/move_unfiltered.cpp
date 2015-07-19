@@ -67,7 +67,7 @@ void pose_move( const geometry_msgs::Pose& pos)
     odom_trans.transform.rotation.z = pos.orientation.z;
     odom_trans.transform.rotation.w = pos.orientation.w;
     //publish the movement
-    joint_pub.publish(joint_state);
+   
     broadcaster.sendTransform(odom_trans);
 }
 

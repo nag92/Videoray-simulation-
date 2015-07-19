@@ -44,9 +44,9 @@ def usbl_move(pos,current):
 
 	print 'hello'
 	broadcaster = tf.TransformBroadcaster()
-	if outlier_filter.filter(pos.pose.position.x,pos.pose.position.y,current.position.z):
-		current.position.x = pos.pose.position.x
-		current.position.y = pos.pose.position.y
+	#if outlier_filter.filter(pos.pose.position.x,pos.pose.position.y,current.position.z):
+	current.position.x = pos.pose.position.x
+	current.position.y = pos.pose.position.y
 
 	
 	broadcaster.sendTransform( (current.position.x,current.position.y,current.position.z), 
