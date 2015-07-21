@@ -64,4 +64,4 @@ def outlier(x,y,z):
             md.pop(0)
     return is_good
 outlier.count = 0
-outlier.w = 0
+outlier.w = 1.25
