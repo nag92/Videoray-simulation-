@@ -38,6 +38,10 @@ mpl.rc("savefig", dpi=150)
 import time
 
 
+from tf.transformations import euler_from_quaternion
+
+
+
 
 #//move the videoray using the data from the /pose_only node
 def usbl_move(pos,current):
@@ -61,7 +65,7 @@ def usbl_move(pos,current):
 				       [0,  0,  dt, 0, 0, 1, ]])
 		B = np.matrix([0])
 		C = np.eye(loc.shape[0])
-		Q = np.eye(loc.shape[0])*0.05
+		Q = np.eye(loc.shape[0])*0.5
 		R = np.eye(loc.shape[0])*5000
 		P = np.eye(loc.shape[0])
 		U = np.matrix( [[0]])
@@ -135,7 +139,20 @@ def pose_move(pos):
 	
 		pose_move.kalman = kalman_filter.kalman_filter(A,B,C,Q,P,R,loc)
 		pose_move.start = 0
+		pose_move.lastX = current.orientation.x
+		pose_move.lastY = current.orientation.y
+		pose_move.lastZ = current.orientation.z
+		pose_move.lastW = current.orientation.w
 
+
+	if( pos.orientation.z < 0 and pose_move.lastZ > 0 ):
+		pose.orientation.z = -1 - pose.orientation.z
+
+	pose_move.lastX = pos.orientation.x
+	pose_move.lastY = pos.orientation.y
+	pose_move.lastZ = pos.orientation.z
+	pose_move.lastW = pos.orientation.w
+	print pose_move.lastZ
 
 	Z = np.matrix( [[0],[0],[0],[0],[pos.orientation.x],[pos.orientation.y],[pos.orientation.z],[pos.orientation.w] ])
 	U = np.matrix( [[0]])
@@ -144,19 +161,21 @@ def pose_move(pos):
 	kalman_pos = pose_move.kalman.getState()
 	current.orientation.x = kalman_pos[5]
 	current.orientation.y = kalman_pos[4]*-1
-	current.orientation.z = kalman_pos[6]*-1
+	current.orientation.z = kalman_pos[6]*-1	
 	current.orientation.w = kalman_pos[7]
 	#update('b')
 
-	# broadcaster.sendTransform( (0,0,0), 
-	# 							(current.orientation.x,current.orientation.y,current.orientation.z,current.orientation.w),
-	# 								rospy.Time.now(), "odom", "body" )
-	
 	broadcaster.sendTransform( (current.position.x,current.position.y,current.position.z), 
 								(current.orientation.x,current.orientation.y,current.orientation.z,
 								current.orientation.w),
 								rospy.Time.now(), "body", "odom" )
 
+
+	# broadcaster.sendTransform( (0,0,0), 
+	# 							(current.orientation.x,current.orientation.y,current.orientation.z,current.orientation.w),
+	# 								rospy.Time.now(), "odom", "body" )
+	
+	
 def update(c):
 
 	broadcaster = tf.TransformBroadcaster()
@@ -166,7 +185,7 @@ def update(c):
 		update.start = 0
 
 	
-	update.ax.scatter(current.position.x,current.position.y,current.position.z,color=c)
+	#update.ax.scatter(current.position.x,current.position.y,current.position.z,color=c)
 	
 	#update.plt.draw();
 

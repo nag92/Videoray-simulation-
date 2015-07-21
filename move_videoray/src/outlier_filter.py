@@ -1,8 +1,20 @@
+'''
+Created on Jul 3, 2015
+
+@author: nathaniel, I&E summer 2015
+
+This program filters out the outlier in of the x,y coordinates 
+using a Mahalanobis distance with a rolling average and standard deveation 
+The crirtia for a oulier is md > mu + 1.25*sigma
+
+'''
 
 import numpy as np
 import random
 #outler stuff
 n = 10
+count = 0
+
 md =[random.random() for _ in range(0, n)]
 #random points
 x_list = [random.random() for _ in range(0, n)]
@@ -15,6 +27,7 @@ def outlier(x,y,z):
     y_list.append(y)
     x_list.pop(0)
     y_list.pop(0)
+    
     #get the covariance matrix
     v = np.linalg.inv(np.cov(x_list,y_list,rowvar=0))
    
@@ -28,14 +41,27 @@ def outlier(x,y,z):
     # calculate the Mahalanobis distance
     dis = np.sqrt(np.dot(np.dot(np.transpose(diff_xy[n-1]),v),diff_xy[n-1]))
     # update the window 
-    md.append( dis)
-    md.pop(0)
+    #print dis
+    print outlier.count
+    print outlier.w
     #find mean and standard standard deviation of the standard deviation list
+    if outlier.count <= n:
+        outlier.count = outlier.count + 1
+        md.append( dis)
+        md.pop(0)
     mu  = np.mean(md)
     sigma = np.std(md)
-    print md
+    #print md
+    
     
     # compare to threshold to see if a outlier
-    if dis < mu + 1.25*sigma:
-        is_good = True
+    if dis < mu + outlier.w*sigma:
+        is_good = True    
+        if outlier.count > n:
+            outlier.count = outlier.count + 1
+            md.append( dis)
+            outlier.w = 1.5
+            md.pop(0)
     return is_good
+outlier.count = 0
+outlier.w = 0
