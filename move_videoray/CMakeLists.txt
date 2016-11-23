@@ -169,42 +169,11 @@ include_directories(
 include_directories(include ${catkin_INCLUDE_DIRS})
 
 
-add_executable(move_straight src/move_straight.cpp)
-target_link_libraries(move_straight ${catkin_LIBRARIES})
 
 
-add_executable(move_from_usbl src/move_from_usbl.cpp)
-target_link_libraries(move_from_usbl ${catkin_LIBRARIES})
 
-add_executable(move_from_pose_only src/move_from_pose_only.cpp)
-target_link_libraries(move_from_pose_only ${catkin_LIBRARIES})
+add_executable(propFilter src/propFilter.cpp)
+target_link_libraries(propFilter ${catkin_LIBRARIES})
 
-add_executable(move_unfiltered src/move_unfiltered.cpp)
-target_link_libraries(move_unfiltered ${catkin_LIBRARIES})
-
-add_executable(limitFilter src/limitFilter.cpp)
-target_link_libraries(limitFilter ${catkin_LIBRARIES})
-
-
-add_executable(indicesFilter src/indicesFilter.cpp)
-target_link_libraries(indicesFilter ${catkin_LIBRARIES})
-
-add_executable(smoothFilter src/smoothFilter.cpp)
-target_link_libraries(smoothFilter ${catkin_LIBRARIES})
-
-add_executable(voxelFilter src/voxelFilter.cpp)
-target_link_libraries(voxelFilter ${catkin_LIBRARIES})
-
-add_executable(featureExtraction src/featureExtraction.cpp)
-target_link_libraries(featureExtraction ${catkin_LIBRARIES})
-
-
-add_executable(fullLimitFilter src/fullLimitFilter.cpp)
-target_link_libraries(fullLimitFilter ${catkin_LIBRARIES})
-
-
-add_executable(pointFilter src/pointFilter.cpp)
-target_link_libraries(pointFilter ${catkin_LIBRARIES})
-
-add_executable(indicesFilter2 src/indicesFilter2.cpp)
-target_link_libraries(indicesFilter2 ${catkin_LIBRARIES})
+add_executable(noFilter src/noFilter.cpp)
+target_link_libraries(noFilter ${catkin_LIBRARIES})

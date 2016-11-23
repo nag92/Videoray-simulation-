@@ -44,7 +44,7 @@ from tf.transformations import euler_from_quaternion
 
 
 #//move the videoray using the data from the /pose_only node
-def usbl_move(pos,current):
+def usbl_move(pos):
 
 	broadcaster = tf.TransformBroadcaster()
 	if usbl_move.start:
@@ -105,21 +105,22 @@ def pose_move(pos):
 
 	#pos.position.z is in kPa, has to be convereted to depth
 	# P  = P0 + pgz ----> pos.position.z = P0 + pg*z_real
-	z_real = -(pos.position.z -101.325)/9.81
+	z_real = -pos.position.z# -(1000*pos.position.z-101.325)/9.81 
 	current.position.z = z_real
 	broadcaster = tf.TransformBroadcaster()
+	#set up the Kalman Filter
 	if pose_move.start:
 
-		dt = .04
+		dt = .043
 
 		loc = np.matrix([[0],#v_x
 						[0],#v_y
 						[0],#v_z
 						[0],#v_w
-						[pos.orientation.x],#x
-						[pos.orientation.y],#y
-						[pos.orientation.z],#z
-						[pos.orientation.w]])#w
+						[0],#x
+						[0],#y
+						[0],#z
+						[1]])#w
 	
 		A = np.matrix([[1,  0,  0,  0, 0, 0, 0, 0,],
 				   	   [0,  1,  0,  0, 0, 0, 0, 0,],
@@ -129,6 +130,7 @@ def pose_move(pos):
 				       [0,  dt, 0,  0, 0, 1, 0, 0,],
 				       [0,  0,  dt, 0, 0, 0, 1, 0,],
 				       [0,  0,  0,  dt, 0, 0,0, 1,]])
+		
 		B = np.matrix([0])
 		C = np.eye(loc.shape[0])
 		Q = np.eye(loc.shape[0])*.05
@@ -145,8 +147,6 @@ def pose_move(pos):
 		pose_move.lastW = current.orientation.w
 
 
-	if( pos.orientation.z < 0 and pose_move.lastZ > 0 ):
-		pose.orientation.z = -1 - pose.orientation.z
 
 	pose_move.lastX = pos.orientation.x
 	pose_move.lastY = pos.orientation.y
@@ -154,17 +154,20 @@ def pose_move(pos):
 	pose_move.lastW = pos.orientation.w
 	print pose_move.lastZ
 
+	#kalman filter inputs
 	Z = np.matrix( [[0],[0],[0],[0],[pos.orientation.x],[pos.orientation.y],[pos.orientation.z],[pos.orientation.w] ])
 	U = np.matrix( [[0]])
 	pose_move.kalman.move(U,Z)
 	
 	kalman_pos = pose_move.kalman.getState()
+	#new pose information from kalman
 	current.orientation.x = kalman_pos[5]
 	current.orientation.y = kalman_pos[4]*-1
 	current.orientation.z = kalman_pos[6]*-1	
 	current.orientation.w = kalman_pos[7]
 	#update('b')
 
+	#update the tf
 	broadcaster.sendTransform( (current.position.x,current.position.y,current.position.z), 
 								(current.orientation.x,current.orientation.y,current.orientation.z,
 								current.orientation.w),
@@ -175,7 +178,8 @@ def pose_move(pos):
 	# 							(current.orientation.x,current.orientation.y,current.orientation.z,current.orientation.w),
 	# 								rospy.Time.now(), "odom", "body" )
 	
-	
+
+#draw a graph
 def update(c):
 
 	broadcaster = tf.TransformBroadcaster()
@@ -219,7 +223,8 @@ if __name__ == '__main__':
 	update.start  = 1 
 	usbl_move.start = 1
 	pose_move.start = 1
-	rospy.Subscriber("/usbl_pose", PoseStamped, usbl_move,current)
+	#pub = rospy.Publisher("newPose", Pose)
+	rospy.Subscriber("/usbl_pose", PoseStamped, usbl_move)
 	rospy.Subscriber("/pose_only", Pose, pose_move);
 	rospy.spin()
 

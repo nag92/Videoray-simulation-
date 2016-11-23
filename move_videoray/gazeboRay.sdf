@@ -1,0 +1,35 @@
+<?xml version='1.0'?>
+
+
+<sdf version='1.4'>
+  <model name='videoray'>
+    <link name='body'>
+      <pose>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>0 0 0 0 -0 0</pose>
+        <mass>1.001</mass>
+        <inertia>
+          <ixx>100</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>100</iyy>
+          <iyz>0</iyz>
+          <izz>100</izz>
+        </inertia>
+      </inertial>
+      <visual name='body_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>file:///home/nathaniel/simulation/src/ros-videoray-sim/move_videoray/graphics/videoray_robot.stl</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <velocity_decay>
+        <linear>0</linear>
+        <angular>0</angular>
+      </velocity_decay>
+    </link>
+  </model>
+</sdf>

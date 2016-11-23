@@ -60,8 +60,8 @@ def outlier(x,y,z):
         if outlier.count > n:
             outlier.count = outlier.count + 1
             md.append( dis)
-            outlier.w = 1.5
+            outlier.w = 1.6
             md.pop(0)
     return is_good
 outlier.count = 0
-outlier.w = 1.25
+outlier.w = 1.75 

@@ -1,8 +1,0 @@
-<launch>
-       
-        <param name="robot_description" command="cat $(find move_videoray)/videoray.urdf" />
-        <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
-        <node name="move_unfiltered" pkg="move_videoray" type="move_unfiltered"/>
-        <node pkg="tf" type="static_transform_publisher" name="sonarscan" args="0 0 0 0 0 0 1 sonar_link sonar 100" /> 
-       
-</launch>

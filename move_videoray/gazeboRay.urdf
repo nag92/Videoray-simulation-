@@ -1,7 +1,10 @@
 <?xml version="1.0"?>
 <robot name="videoray">
 
- 
+ <transmission name="tran1">
+    <joint name"bodyJoint">
+
+  </transmission>
 
 <link name="body">
 	<inertial>
@@ -28,13 +31,22 @@
   <link name="sonar_link">
     <inertial>
       <mass value="0.001" />
-      <origin xyz="-0.0762 0 0" />
+      <origin xyz="0 0 0" />
       <inertia ixx="0.0001" ixy="0.0" ixz="0.0"
                iyy="0.0001" iyz="0.0" izz="0.0001" />
     </inertial>
   </link>
 
-  
+  <gazebo reference="videoray">
+    <material>Gazebo/Blue</material>
+  </gazebo>
 
+
+<gazebo>
+  <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+    <robotNamespace>/MYROBOT</robotNamespace>
+    <robotSimType>gazebo_ros_control/DefaultRobotHWSim</robotSimType>
+  </plugin>
+</gazebo>
 
 </robot>

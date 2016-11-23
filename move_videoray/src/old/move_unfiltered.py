@@ -40,7 +40,7 @@ import time
 
 
 #//move the videoray using the data from the /pose_only node
-def usbl_move(pos):
+def usbl_move(pos,current):
 
 	print 'hello'
 	broadcaster = tf.TransformBroadcaster()
@@ -53,22 +53,22 @@ def usbl_move(pos):
 								(current.orientation.x,current.orientation.y,current.orientation.z,current.orientation.w),
 									 rospy.Time.now(), "odom", "body" )
 #move the videoray using the data from the /pose_only node	
-def pose_move(pos):
+def pose_move(pos,current):
 
 	#pos.position.z is in kPa, has to be convereted to depth
 	# P  = P0 + pgz ----> pos.position.z = P0 + pg*z_real
-	z_real = -(1000*pos.position.z-101.325)/9.81 
+	z_real = (pos.position.z - 101.325)/9.81;
 
 	#update the movement
 	broadcaster = tf.TransformBroadcaster()
-	current.orientation.x = pos.orientation.y
-	current.orientation.y = pos.orientation.x*-1
-	current.orientation.z = pos.orientation.z*-1
+	current.orientation.x = pos.orientation.x
+	current.orientation.y = pos.orientation.y
+	current.orientation.z = pos.orientation.z
 	current.orientation.w = pos.orientation.w
 	current.position.z = z_real
 	broadcaster.sendTransform( (current.position.x,current.position.y,current.position.z), 
 								(current.orientation.x,current.orientation.y,current.orientation.z,current.orientation.w),
-									 rospy.Time.now(), "body", "odom" )
+									 rospy.Time.now(), "odom", "body" )
 
 
 
@@ -90,11 +90,11 @@ if __name__ == '__main__':
 	#send the tf frame
 	broadcaster.sendTransform( (current.position.x,current.position.y,current.position.z), 
 								(current.orientation.x,current.orientation.y,current.orientation.z,current.orientation.w),
-									 rospy.Time.now(), "body", "odom" )
+									 rospy.Time.now(), "odom", "body" )
 
 	#listen for information
-	rospy.Subscriber("/usbl_pose", PoseStamped, usbl_move)
-	rospy.Subscriber("/pose_only", Pose, pose_move);
+	rospy.Subscriber("/usbl_pose", PoseStamped, usbl_move,current)
+	rospy.Subscriber("/pose_only", Pose, pose_move, current);
 	rospy.spin()
 
 
